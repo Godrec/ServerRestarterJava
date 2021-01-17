@@ -31,6 +31,10 @@ public class Server {
     private static final int POWER_OFF = 1;
     private static final int POWER_ON = 0;
 
+    private static final int WAITING_DURATION = 10; // seconds
+    private static final int EXTENDED_WAITING_DURATION = 30; // seconds
+    private static final int POWER_THRESHOLD_SERVER_OFF = 30;
+
     private static final int SNMP_RETRIES = 1;
     private static final int SNMP_TIMEOUT = 2000;
 
@@ -134,23 +138,32 @@ public class Server {
             }
 
             if (powerUsage >= 0) {
-                if (powerUsage < triggerMinPower) {
-                    System.out.println("[INFO] Server " + id + " only pulls " + powerUsage + "W.");
-                    if (status == ServerStatus.inactive) {
-                        if (restartTries < 3) {
-                            restart();
-                            restartTries++;
-                            status = ServerStatus.running;
-                        } else {
-                            status = ServerStatus.failedRestarts;
-                        }
-                    } else {
-                        status = ServerStatus.inactive;
+                System.out.println("[INFO] Server " + id + " only pulls " + powerUsage + "W.");
+
+                if (powerUsage <= POWER_THRESHOLD_SERVER_OFF) {
+                    try {
+                        hardRestart(true);
+                    } catch (IOException e) {
+                        System.out.println("[ERROR] PDU of server " + id + " unreachable.");
                     }
+                } else if (powerUsage < triggerMinPower) {
+                    flagRestart();
                 } else {
                     restartTries = 0;
                 }
             }
+        }
+    }
+
+    private void flagRestart() {
+        if (status == ServerStatus.inactive) {
+            if (restartTries < 3) {
+                restart();
+            } else {
+                status = ServerStatus.failedRestarts;
+            }
+        } else {
+            status = ServerStatus.inactive;
         }
     }
 
@@ -161,12 +174,13 @@ public class Server {
             System.out.println("[INFO] Server " + id + " unresponsive, hard restarting.");
 
             try {
-                hardRestart();
+                hardRestart(false);
             } catch (IOException e) {
                 System.out.println("[ERROR] PDU of server " + id + " unreachable.");
             }
-
         }
+        restartTries++;
+        status = ServerStatus.running;
     }
 
     /**
@@ -208,10 +222,17 @@ public class Server {
     /**
      * Restarts the server by turning the power off and on again.
      *
+     * @param longWait Whether we should wait longer for all power to run out.
      * @throws IOException If the connection to the PDU fails.
      */
-    public void hardRestart() throws IOException {
+    public void hardRestart(boolean longWait) throws IOException {
+        int waitingDuration = longWait ? EXTENDED_WAITING_DURATION : WAITING_DURATION;
         switchPower(POWER_OFF);
+
+        try {
+            Thread.sleep(waitingDuration * 1000L);
+        } catch (InterruptedException ignored) {
+        }
         switchPower(POWER_ON);
     }
 

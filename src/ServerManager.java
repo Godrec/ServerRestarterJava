@@ -136,7 +136,7 @@ public class ServerManager {
             throw new IllegalArgumentException();
         } else {
             if (hardRestart) {
-                server.hardRestart();
+                server.hardRestart(false);
             } else {
                 server.softRestart();
             }
