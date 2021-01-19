@@ -19,6 +19,8 @@ import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Contains the data for managing a server.
@@ -72,6 +74,8 @@ public class Server {
     private int restartTries = 0;
     private ServerStatus status;
 
+    private final Logger logger;
+
     /**
      * Creates a new server instance.
      *
@@ -111,6 +115,7 @@ public class Server {
         setSwitchOid = new OID(switchOid);
         jSch = new JSch();
         jSch.addIdentity(keyFilePath, sshKeyPassphrase);
+        logger = Logger.getLogger("main");
     }
 
     private CommunityTarget<Address> createCommunity(String communityName) {
@@ -139,19 +144,19 @@ public class Server {
             try {
                 powerUsage = fetchPowerUsage();
             } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage());
             } catch (IOException e) {
-                System.out.println("[ERROR] PDU of server " + id + " unreachable.");
+                logger.log(Level.SEVERE, "PDU of server " + id + " unreachable.");
             }
 
             if (powerUsage >= 0) {
-                System.out.println("[INFO] Server " + id + " only pulls " + powerUsage + "W.");
+                logger.info("Server " + id + " only pulls " + powerUsage + "W.");
 
                 if (powerUsage <= POWER_THRESHOLD_SERVER_OFF) {
                     try {
                         hardRestart(true);
                     } catch (IOException e) {
-                        System.out.println("[ERROR] PDU of server " + id + " unreachable.");
+                        logger.log(Level.SEVERE, "PDU of server " + id + " unreachable.");
                     }
                 } else if (powerUsage < triggerMinPower) {
                     flagRestart();
@@ -167,6 +172,7 @@ public class Server {
             if (restartTries < 3) {
                 restart();
             } else {
+                logger.log(Level.SEVERE, "Server " + id + " has failed to restart three times.");
                 status = ServerStatus.failedRestarts;
             }
         } else {
@@ -175,15 +181,15 @@ public class Server {
     }
 
     private void restart() {
-        System.out.println("[INFO] Soft restarting server " + id + ".");
+        logger.info("Soft restarting server " + id + ".");
 
         if (!softRestart()) {
-            System.out.println("[INFO] Server " + id + " unresponsive, hard restarting.");
+            logger.info("Server " + id + " unresponsive, hard restarting.");
 
             try {
                 hardRestart(false);
             } catch (IOException e) {
-                System.out.println("[ERROR] PDU of server " + id + " unreachable.");
+                logger.log(Level.SEVERE,"PDU of server " + id + " unreachable.");
             }
         }
         restartTries++;
@@ -196,6 +202,7 @@ public class Server {
      * @return Returns {@code true} if a ssh connection was established.
      */
     public boolean softRestart() {
+        logger.log(Level.INFO, "Server " + id + " tries to soft restart.");
         boolean success = false;
         Session ssh = null;
         Channel channel = null;
@@ -213,7 +220,7 @@ public class Server {
             channel.connect();
             success = true;
         } catch (JSchException e) {
-            System.out.println("[INFO] Server " + id + "doesn't respond.");
+            logger.info("Server " + id + "doesn't respond.");
         } finally {
             if (ssh != null) {
                 ssh.disconnect();
@@ -234,6 +241,7 @@ public class Server {
      */
     public void hardRestart(boolean longWait) throws IOException {
         int waitingDuration = longWait ? EXTENDED_WAITING_DURATION : WAITING_DURATION;
+        logger.log(Level.INFO, "Server " + id + " hard restarts.");
         switchPower(POWER_OFF);
 
         try {
@@ -266,7 +274,7 @@ public class Server {
         if (response != null) {
             return response.get(0).getVariable().toInt();
         }
-        throw new RuntimeException("[ERROR] PDU of server " + id + " unreachable.");
+        throw new RuntimeException("PDU of server " + id + " unreachable.");
     }
 
     /**

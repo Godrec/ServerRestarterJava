@@ -5,6 +5,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Main {
 
@@ -34,9 +42,27 @@ public class Main {
 
     private static ServerManager manager;
 
+    private static Logger logger;
+
     public static void main(String[] args) throws IOException {
+        initLogger();
         loadManager();
         startExecutor(new BufferedReader(new InputStreamReader(System.in)));
+    }
+
+    private static void initLogger() {
+        logger = Logger.getLogger("main");
+        FileHandler fh;
+
+        try {
+            fh = new FileHandler("warnings.log");
+            logger.addHandler(fh);
+            System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tT [%4$s] %5$s%6$s%n");
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+        } catch (SecurityException | IOException e) {
+            printError("Couldn't initialize logger.", false);
+        }
     }
 
     /**
@@ -176,6 +202,7 @@ public class Main {
     private static void loadManager() {
         try {
             manager = new ServerManager();
+            logger.info("Loaded server manager.");
         } catch (ClassCastException | ParseException e) {
             printError(ERR_CONFIG_FILE_BAD, false);
         } catch (JSchException e) {
@@ -222,7 +249,7 @@ public class Main {
     }
 
     private static void printInfo(String info) {
-        System.out.println(INFO_PREFIX + info);
+        logger.log(Level.INFO, info);
     }
 
 
@@ -231,7 +258,7 @@ public class Main {
         if (isCommandError) {
             System.out.println(ERR_PREFIX + error + ERR_SUFFIX);
         } else {
-            System.out.println(ERR_PREFIX + error);
+            logger.log(Level.SEVERE, error);
         }
     }
 

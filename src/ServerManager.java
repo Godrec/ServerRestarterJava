@@ -12,6 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Reads a config file, manages a list of servers by checking their status.
@@ -25,12 +27,15 @@ public class ServerManager {
 
     Thread checkCycle;
 
+    private final Logger logger;
+
     public ServerManager() throws ParseException, JSchException, IOException {
+        logger = Logger.getLogger("main");
         readConfig();
     }
 
     private void readConfig() throws IOException, ParseException {
-        System.out.println("[INFO] Loading config file...");
+        System.out.println("Loading config file...");
         JSONParser parser = new JSONParser();
         FileReader configReader = null;
 
@@ -60,7 +65,7 @@ public class ServerManager {
                     final Server server = new Server(id, ip, pduAddress, pduIndex, pduOutletNumber, triggerMinPower, keyFilePath, controlActive);
                     servers.put(id, server);
                 } catch (JSchException e) {
-                    System.out.println("[ERROR] Invalid keyFile or passphrase for server " + id + ".");
+                    logger.log(Level.SEVERE, "Invalid keyFile or passphrase for server " + id + ".");
                 }
             }
         }
@@ -97,7 +102,7 @@ public class ServerManager {
         try {
             success = configFile.createNewFile();
         } catch (IOException e) {
-            System.out.println("[ERROR] Cannot create config file.");
+            logger.log(Level.SEVERE, "Cannot create config file.");
         }
 
         if (success) {
@@ -106,7 +111,7 @@ public class ServerManager {
                 writeDefaultConfigFile(out);
                 out.close();
             } catch (IOException e) {
-                System.out.println("[ERROR] Cannot create config file.");
+                logger.log(Level.SEVERE, "Cannot create config file.");
             }
         }
     }
