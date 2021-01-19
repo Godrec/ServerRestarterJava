@@ -25,25 +25,32 @@ import java.io.IOException;
  */
 public class Server {
 
+    // VALUES TO CONFIGURE
+    /**
+     * The username used for the ssh login.
+     */
+    private static final String sshUser = "";
+
+    /**
+     * The passphrase of the ssh Key used for the ssh connection.
+     */
+    private static final String sshKeyPassphrase = "";
+
+    // CONSTANTS
     private static final String PUBLIC_COMMUNITY = "public";
     private static final String PRIVATE_COMMUNITY = "private";
-
     private static final int POWER_OFF = 1;
     private static final int POWER_ON = 0;
-
     private static final int WAITING_DURATION = 10; // seconds
     private static final int EXTENDED_WAITING_DURATION = 30; // seconds
     private static final int POWER_THRESHOLD_SERVER_OFF = 30;
-
     private static final int SNMP_RETRIES = 1;
     private static final int SNMP_TIMEOUT = 2000;
-
-    private static final String sshUser = "";
-    private static final String sshKeyPassphrase = "";
     private static final int sshPort = 22;
     private static final int SSH_TIMEOUT = 10000;
     private static final String RESTART_COMMAND = "sudo shutdown -r now";
 
+    // Class parameters
     private final CommunityTarget<Address> publicCommunity;
     private final CommunityTarget<Address> privateCommunity;
 
