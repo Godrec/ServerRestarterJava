@@ -27,17 +27,6 @@ import java.util.logging.Logger;
  */
 public class Server {
 
-    // VALUES TO CONFIGURE
-    /**
-     * The username used for the ssh login.
-     */
-    private static final String sshUser = "";
-
-    /**
-     * The passphrase of the ssh Key used for the ssh connection.
-     */
-    private static final String sshKeyPassphrase = "";
-
     // CONSTANTS
     private static final String PUBLIC_COMMUNITY = "public";
     private static final String PRIVATE_COMMUNITY = "private";
@@ -54,6 +43,7 @@ public class Server {
 
     // Class parameters
     private final CommunityTarget<Address> publicCommunity;
+
     private final CommunityTarget<Address> privateCommunity;
 
     public final String id;
@@ -114,7 +104,7 @@ public class Server {
         getPowerOid = new OID(powerOid);
         setSwitchOid = new OID(switchOid);
         jSch = new JSch();
-        jSch.addIdentity(keyFilePath, sshKeyPassphrase);
+        jSch.addIdentity(keyFilePath, Main.sshKeyPassphrase);
         logger = Logger.getLogger("main");
     }
 
@@ -208,7 +198,7 @@ public class Server {
         Channel channel = null;
 
         try {
-            ssh = jSch.getSession(sshUser, ip, sshPort);
+            ssh = jSch.getSession(Main.sshUser, ip, sshPort);
             java.util.Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             ssh.setConfig(config);
@@ -285,4 +275,5 @@ public class Server {
     public ServerStatus getStatus() {
         return status;
     }
+
 }

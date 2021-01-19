@@ -5,44 +5,47 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
 
-    private Main() {}
+    // PARAMETERS TO CONFIGURE
+    /**
+     * The username used for the ssh login.
+     */
+    static final String sshUser = "";
 
+    /**
+     * The passphrase of the ssh Key used for the ssh connection.
+     */
+    static final String sshKeyPassphrase = "";
+
+    // Constants
     private static final String SHELL_PROMPT = "manager> ";
-
-    private static final String INFO_PREFIX = "[INFO] ";
     private static final String INFO_RELOADING = "Reloading config. Please start the check cycle manually.";
     private static final String INFO_STARTING = "Starting check cycle.";
     private static final String INFO_STOPPING = "Stopping check cycle.";
-
-    private static final String ERR_PREFIX = "[ERROR] ";
     private static final String ERR_SUFFIX = " Type help for a list of commands.";
     private static final String ERR_CMD_UNKNOWN = "The command you've entered does not exist.";
     private static final String ERR_CMD_INVALID = "Invalid command usage.";
     private static final String ERR_TOO_FEW_ARGS = "Not enough arguments.";
     private static final String ERR_TOO_MANY_ARGS = "Too many arguments.";
-
     private static final String ERR_SERVER_NOT_FOUND = "Server with given ID not found.";
     private static final String ERR_PDU_CONNECTION = "PDU of server %s unreachable";
     private static final String ERR_CONFIG_FILE_BAD = "Config file is not well formatted.";
     private static final String ERR_CONFIG_FILE_NOT_FOUND = "Config file not found. Creating an empty config.txt in current path.";
-
     private static final int ONE_ARG = 2;
     private static final int TWO_ARGS = 3;
 
+    // Class values
     private static ServerManager manager;
-
     private static Logger logger;
+
+    private Main() {
+    }
 
     public static void main(String[] args) throws IOException {
         initLogger();
@@ -253,10 +256,9 @@ public class Main {
     }
 
 
-
     private static void printError(String error, boolean isCommandError) {
         if (isCommandError) {
-            System.out.println(ERR_PREFIX + error + ERR_SUFFIX);
+            System.out.println(error + ERR_SUFFIX);
         } else {
             logger.log(Level.SEVERE, error);
         }
