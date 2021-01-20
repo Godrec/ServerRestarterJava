@@ -104,7 +104,7 @@ public class Server {
         getPowerOid = new OID(powerOid);
         setSwitchOid = new OID(switchOid);
         jSch = new JSch();
-        jSch.addIdentity(keyFilePath, Main.sshKeyPassphrase);
+        jSch.addIdentity(keyFilePath, Parameters.sshKeyPassphrase);
         logger = Logger.getLogger("main");
     }
 
@@ -198,7 +198,7 @@ public class Server {
         Channel channel = null;
 
         try {
-            ssh = jSch.getSession(Main.sshUser, ip, sshPort);
+            ssh = jSch.getSession(Parameters.sshUser, ip, sshPort);
             java.util.Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             ssh.setConfig(config);

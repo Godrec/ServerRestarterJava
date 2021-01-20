@@ -12,17 +12,6 @@ import java.util.logging.SimpleFormatter;
 
 public class Main {
 
-    // PARAMETERS TO CONFIGURE
-    /**
-     * The username used for the ssh login.
-     */
-    static final String sshUser = "";
-
-    /**
-     * The passphrase of the ssh Key used for the ssh connection.
-     */
-    static final String sshKeyPassphrase = "";
-
     // Constants
     private static final String SHELL_PROMPT = "manager> ";
     private static final String INFO_RELOADING = "Reloading config. Please start the check cycle manually.";
