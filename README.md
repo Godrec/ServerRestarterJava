@@ -5,13 +5,12 @@ off their power in an autonomous environment. The servers must therefor be conne
 ## Requirements
 **Minimum Java Version**: 8
 
-## Getting started
-##### Usage
+## Usage
 1. For security and convenience reasons the ssh username and password have to be hardcoded in the application before compiling.
 2. The compiled jar file has to be executed within a directory containing a config file. It will be created when running the program the 
 first time and has to be configured as specified below.
 
-##### Configuration
+## Configuration
 Specify the following parameters in the created *config.txt* file:
 - **checkIntervalInSeconds**: The time in seconds to be waited within server activity checks.
 - **servers**: An array of servers each containing the following values:
