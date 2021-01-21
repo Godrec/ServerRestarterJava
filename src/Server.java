@@ -66,6 +66,8 @@ public class Server {
 
     private final Logger logger;
 
+    private final boolean sshIsViaKey;
+
     /**
      * Creates a new server instance.
      *
@@ -75,7 +77,7 @@ public class Server {
      * @param pduIndex The index of the server's PDU within their bundle.
      * @param pduOutletNumber The number of the outlet in the PDU the server is connected to.
      * @param triggerMinPower The amount of W the server is recognized as idle.
-     * @param keyFilePath The path to the ssh key file.
+     * @param keyFilePath The path to the ssh key file. Leave empty if not used.
      * @param controlActive Whether the server should be checked.
      * @throws IOException Thrown when creating streams for the SNMP protocol.
      * @throws JSchException Thrown when setting up and reading the ssh connection's keyfile.
@@ -104,7 +106,11 @@ public class Server {
         getPowerOid = new OID(powerOid);
         setSwitchOid = new OID(switchOid);
         jSch = new JSch();
-        jSch.addIdentity(keyFilePath, Parameters.sshKeyPassphrase);
+        sshIsViaKey = !keyFilePath.isEmpty();
+
+        if (sshIsViaKey) {
+            jSch.addIdentity(keyFilePath, Parameters.sshPassphrase);
+        }
         logger = Logger.getLogger("main");
     }
 
@@ -199,6 +205,10 @@ public class Server {
 
         try {
             ssh = jSch.getSession(Parameters.sshUser, ip, sshPort);
+
+            if (!sshIsViaKey) {
+                ssh.setPassword(Parameters.sshPassphrase);
+            }
             java.util.Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             ssh.setConfig(config);

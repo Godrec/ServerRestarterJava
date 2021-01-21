@@ -9,8 +9,8 @@ class Parameters {
     static final String sshUser = "";
 
     /**
-     * The passphrase of the ssh Key used for the ssh connection.
+     * Either the passphrase for the ssh login or the ssh key.
      */
-    static final String sshKeyPassphrase = "";
+    static final String sshPassphrase = "";
 
 }

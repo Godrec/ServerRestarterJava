@@ -25,7 +25,7 @@ public class Main {
     private static final String ERR_SERVER_NOT_FOUND = "Server with given ID not found.";
     private static final String ERR_PDU_CONNECTION = "PDU of server %s unreachable";
     private static final String ERR_CONFIG_FILE_BAD = "Config file is not well formatted.";
-    private static final String ERR_CONFIG_FILE_NOT_FOUND = "Config file not found. Creating an empty config.txt in current path.";
+    private static final String ERR_CONFIG_FILE_NOT_FOUND = "Config file not found. Creating one in current path.";
     private static final int ONE_ARG = 2;
     private static final int TWO_ARGS = 3;
 
@@ -201,6 +201,7 @@ public class Main {
             printError(e.getMessage(), false);
         } catch (FileNotFoundException e) {
             printError(ERR_CONFIG_FILE_NOT_FOUND, false);
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }

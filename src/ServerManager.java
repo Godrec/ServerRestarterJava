@@ -55,7 +55,7 @@ public class ServerManager {
                 final String id = (String) jsonServer.get("id");
                 final String ip = (String) jsonServer.get("ip");
                 final String keyFilePath = (String) jsonServer.get("sshKeyFilePath");
-                final String pduAddress = (String) jsonServer.get("pduAddress");
+                final String pduAddress = (String) jsonServer.get("pduIp");
                 final int pduIndex = ((Long) jsonServer.get("pduIndex")).intValue();
                 final int pduOutletNumber = ((Long) jsonServer.get("pduOutletNumber")).intValue();
                 final int triggerMinPower = ((Long) jsonServer.get("triggerMinimumPower")).intValue();
