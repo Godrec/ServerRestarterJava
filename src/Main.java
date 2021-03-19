@@ -216,7 +216,7 @@ public class Main {
         System.out.printf(cmdFormat, "STATUS", "<String:ID>", "Prints the status and power usage of the given server.");
         System.out.printf(cmdFormat, "ACTIVATE", "", "Activates the server status checker.");
         System.out.printf(cmdFormat, "DEACTIVATE", "", "Deactivates the server status checker.");
-        System.out.printf(cmdFormat, "RESTART", "<ID>", "Starts the server status checker. Optional Parameter -h hard restarts the server.");
+        System.out.printf(cmdFormat, "RESTART", "<ID>", "Restarts the given server. Optional Parameter -h hard restarts the server.");
         System.out.printf(cmdFormat, "RELOAD", "", "Deactivates the server status checker and reloads the config.");
         System.out.printf(cmdFormat, "HELP", "", "Take three guesses.");
         System.out.printf(cmdFormat, "QUIT", "", "Quits the program.");

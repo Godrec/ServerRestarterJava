@@ -127,9 +127,9 @@ public class ServerManager {
         }
         AsciiTable table = new AsciiTable();
         table.addRule();
-        table.addRow("ID", "Status", "PDU-Index", "PDU-Outlet");
+        table.addRow("ID", "Status", "IP", "PDU-Index", "PDU-Outlet");
         table.addRule();
-        servers.forEach((k, v) -> table.addRow(v.id, v.getStatus().name(), v.pduIndex, v.pduOutletNumber));
+        servers.forEach((k, v) -> table.addRow(v.id, v.getStatus().name(), v.ip, v.pduIndex, v.pduOutletNumber));
         table.addRule();
         return table.render();
     }
@@ -143,7 +143,12 @@ public class ServerManager {
             if (hardRestart) {
                 server.hardRestart(false);
             } else {
-                server.softRestart();
+                if (server.softRestart()) {
+                    logger.log(Level.INFO, "Server " + id + "successfully restarted.");
+                } else {
+                    logger.log(Level.WARNING, "Server " + id + "couldn't be reached.");
+                }
+
             }
         }
     }

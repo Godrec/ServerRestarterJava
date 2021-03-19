@@ -47,7 +47,7 @@ public class Server {
     private final CommunityTarget<Address> privateCommunity;
 
     public final String id;
-    private final String ip;
+    public final String ip;
 
     private final String pduAddress;
     public final int pduIndex;
