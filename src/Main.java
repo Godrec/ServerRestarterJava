@@ -92,9 +92,11 @@ public class Main {
             case "A":
             case "ACTIVATE":
                 activateCmd();
+                break;
             case "D":
             case "DEACTIVATE":
                 deactivateCmd();
+                break;
             case "L":
             case "LIST":
                 listCmd();
