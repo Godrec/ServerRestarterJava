@@ -31,8 +31,8 @@ Specify the following parameters in the created *config.txt* file:
   - *ip*: The ip of the server.
   - *sshKeyFilePath*: The path to the ssh key file. Leave blank if unused.
   - *pduIp*: The ip of the pdu the server is connected to.
-  - *pduIndex*: The index of the pdu within its mesh (if they are interconnected).
-  - *pduOutletNumber*: The number of the outlet the server is connected to.
+  - *pduIndex*: The index of the pdu within its mesh (if they are interconnected; starts with 1).
+  - *pduOutletNumber*: The number of the outlet the server is connected to (starts with 1).
   - *triggerMinimumPower*: The minimum power usage in Watt that the server draws if doesn't have to be restarted.
   - *controlActive*: Whether the configured server should be included in the activity check (for maintenance purposes).
     
